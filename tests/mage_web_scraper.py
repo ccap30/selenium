@@ -27,6 +27,7 @@ class MageWebScraper:
         if os.environ.get('HEADLESS') is not None:
             options.add_argument('--headless=new')
         self.driver = webdriver.Chrome(options=options)
+        # self.driver = webdriver.Firefox(options=options)
         
 
     def get_schedule_of_classes_page(self,course:str='ENPM611', year:int=2024, term:str='Fall') -> str:
