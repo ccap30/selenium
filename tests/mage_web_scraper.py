@@ -84,12 +84,12 @@ class MageWebScraper:
                 course = Course()
                 for section_div in res_div.find_all("div", class_="section"):
                     section = Section()
-                    section.id = res_div.find("span", class_='section-id').text.strip()
-                    section.instructor = res_div.find("span", class_='section-instructor').text.strip()
-                    section.total_count = int(res_div.find("span", class_='total-seats-count').text.strip())
-                    section.open_count = int(res_div.find("span", class_='open-seats-count').text.strip())
-                    section.waitlist_count = int(res_div.find("span", class_='waitlist-count').text.strip())
-                    section.room = res_div.find("span", class_='class-building').text.strip()
+                    section.id = section_div.find("span", class_='section-id').text.strip()
+                    section.instructor = section_div.find("span", class_='section-instructor').text.strip()
+                    section.total_count = int(section_div.find("span", class_='total-seats-count').text.strip())
+                    section.open_count = int(section_div.find("span", class_='open-seats-count').text.strip())
+                    section.waitlist_count = int(section_div.find("span", class_='waitlist-count').text.strip())
+                    section.room = section_div.find("span", class_='class-building').text.strip()
                     course.sections.append(section)
                 return course
             
