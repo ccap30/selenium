@@ -8,7 +8,7 @@ class TestScheduleOfClasses(unittest.TestCase):
     
     def setUp(self):
         self.scraper = MageWebScraper()
-
+    
     def get_course_and_assert(self, course_id, year, term):
         soc_src:str = self.scraper.get_schedule_of_classes_page(course_id, term, year)
         self.assertIsNotNone(soc_src, 'Schedule of Classes page could not be loaded')
@@ -95,6 +95,15 @@ class TestScheduleOfClasses(unittest.TestCase):
             if instructor not in seen:
                 seen.add(instructor)
                 _ = self.get_faculty_and_assert(instructor)
+    
+    def test_enpm612_spring_2025_has_description(self):
+        """
+        Checks whether the course ENPM612 can
+        be found on the Schedule of Classes web page
+        for the Spring 2025 semester and has a course description.
+        """
+        course = self.get_course_and_assert('ENPM611', 'Fall', 2024)
+        self.assertIsNotNone(course.description)
 
 
 if __name__ == "__main__":

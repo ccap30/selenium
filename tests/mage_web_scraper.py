@@ -28,7 +28,7 @@ class MageWebScraper:
             options.add_argument('--headless=new')
         self.driver = webdriver.Chrome(options=options)
         # self.driver = webdriver.Firefox(options=options)
-        
+
 
     def get_schedule_of_classes_page(self,course:str='ENPM611', year:int=2024, term:str='Fall') -> str:
         """
@@ -64,8 +64,8 @@ class MageWebScraper:
             
         # Return the page's source code
         return self.driver.page_source
-        
-        
+
+
     def get_course_info_from_schedule_of_classes_page(self, page_source:str, course_id:str='ENPM611') -> Course:
         """
         Parses the page source that is passed in and finds the specified
@@ -82,8 +82,15 @@ class MageWebScraper:
             if div_course_id == course_id:
                 # ... we are parsing it
                 course = Course()
+                course.clear()
+
+                # Extract the course description. Course prerequisites are first, description is second.
+                descriptions:str = res_div.find_all("div", class_="approved-course-text")
+                course.description = descriptions[1].text if len(descriptions) > 1 else None
+
                 for section_div in res_div.find_all("div", class_="section"):
                     section = Section()
+                    section.clear()
                     section.id = section_div.find("span", class_='section-id').text.strip()
                     section.instructor = section_div.find("span", class_='section-instructor').text.strip()
                     section.total_count = int(section_div.find("span", class_='total-seats-count').text.strip())
@@ -117,8 +124,8 @@ class MageWebScraper:
             print(f"ERROR: {e}")
             
         return self.driver.page_source
-        
-        
+
+
     def get_instructor_link_from_search_result_page(self, page_src:str) -> str:
         """
         Returns the link of the first search result of the faculty
@@ -132,15 +139,15 @@ class MageWebScraper:
             return link
         # If there are no search results
         return None
-    
-    
+
+
     def parse_instructor_page(self, url:str) -> Instructor:
         """
         Takes a link to the details page for an instructor
         and parses it into a Instructor object, which
         is then returned.
         """
-            
+
         self.driver.get(url)
         
         try:
@@ -152,10 +159,10 @@ class MageWebScraper:
         
         # Find web page elements and use it to construct the Instructor object
         instructor = Instructor()
+        instructor.clear()
         instructor.title = instructor_soup.find("div", id='faculty_title').text.strip()
         instructor.department = instructor_soup.find("div", id='faculty_department').text.strip()
         instructor.email = instructor_soup.find("div", id='faculty_email').text.strip()
         instructor.bio = instructor_soup.find("div", id='faculty_overview').text.strip()
         return instructor
             
-    
